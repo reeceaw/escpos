@@ -2,6 +2,24 @@ package escpos
 
 import "errors"
 
+// Init is used in initialising or resetting the printer.
+type Init interface {
+	// InitCommand should return the printer-specific command to
+	// initialise the printer.
+	InitCommand() (string, error)
+}
+
+// Cut allows for cutting the printer paper.
+type Cut interface {
+	// CutCommand should return the printer-specific command to cut the
+	// printer paper.
+	CutCommand() (string, error)
+}
+
+type End interface {
+	EndCommand() (string, error)
+}
+
 // Font allows for different font support when printing.
 type Font interface {
 	// FontCommand should return the printer-specific command to set the
@@ -27,12 +45,27 @@ type Emphasis interface {
 // printer. A profile should map from the generic FormatConfig to the specific
 // commands for a particular printer.
 type Profile interface {
+	Init
+	Cut
+	End
 	Font
 	Justification
 	Emphasis
 }
 
 type EpsonTMT20III struct {
+}
+
+func (EpsonTMT20III) InitCommand() (string, error) {
+	return "\x1B@", nil
+}
+
+func (EpsonTMT20III) CutCommand() (string, error) {
+	return "\x1DVA0", nil
+}
+
+func (EpsonTMT20III) EndCommand() (string, error) {
+	return "\xFA", nil
 }
 
 func (EpsonTMT20III) FontCommand(fmtCfg *FormatConfig) (string, error) {
