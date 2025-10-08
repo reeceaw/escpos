@@ -24,7 +24,7 @@ type EpsonTMT20III struct {
 }
 
 func (EpsonTMT20III) FontCommand(fmtCfg *FormatConfig) (string, error) {
-	switch fmtCfg.font.selection {
+	switch fmtCfg.font {
 	case "A":
 		return "\x1BM0", nil
 	case "B":
@@ -39,7 +39,7 @@ func (EpsonTMT20III) FontCommand(fmtCfg *FormatConfig) (string, error) {
 }
 
 func (EpsonTMT20III) JustificationCommand(fmtCfg *FormatConfig) (string, error) {
-	switch fmtCfg.justify.justification {
+	switch fmtCfg.justification {
 	case "left":
 		return "\x1Ba0", nil
 	case "center":
@@ -52,7 +52,7 @@ func (EpsonTMT20III) JustificationCommand(fmtCfg *FormatConfig) (string, error) 
 }
 
 func (EpsonTMT20III) EmphasisCommand(fmtCfg *FormatConfig) (string, error) {
-	if fmtCfg.emphasize.enabled {
+	if fmtCfg.emphasis {
 		return "\x1BE1", nil
 	} else {
 		return "\x1BE0", nil

@@ -3,39 +3,24 @@ package escpos
 import "fmt"
 
 type FormatConfig struct {
-	justify   justify
-	emphasize emphasize
-	font      font
+	justification string
+	emphasis      bool
+	font          string
 }
 
-func (fmtCfg FormatConfig) apply(client *Client) {
-	applyCommand(fmtCfg.justify, client)
-	applyCommand(fmtCfg.emphasize, client)
-	applyCommand(fmtCfg.font, client)
+func (fmtCfg FormatConfig) apply(client *Client, profile Profile) {
+	applyCommand(
+		func() (string, error) { return profile.FontCommand(&fmtCfg) }, client)
+
+	applyCommand(
+		func() (string, error) { return profile.JustificationCommand(&fmtCfg) }, client)
+
+	applyCommand(
+		func() (string, error) { return profile.EmphasisCommand(&fmtCfg) }, client)
 }
 
-func (fmtCfg FormatConfig) applyRefactored(client *Client, profile Profile) {
-	command, err := profile.FontCommand(&fmtCfg)
-	if err != nil {
-		fmt.Printf("invalid command: %v\n", err)
-	}
-	client.writeString(command)
-
-	command, err = profile.JustificationCommand(&fmtCfg)
-	if err != nil {
-		fmt.Printf("invalid command: %v\n", err)
-	}
-	client.writeString(command)
-
-	command, err = profile.EmphasisCommand(&fmtCfg)
-	if err != nil {
-		fmt.Printf("invalid command: %v\n", err)
-	}
-	client.writeString(command)
-}
-
-func applyCommand(option toCommander, client *Client) {
-	command, err := option.toCommand()
+func applyCommand(getCommand func() (string, error), client *Client) {
+	command, err := getCommand()
 	if err != nil {
 		fmt.Printf("invalid command: %v\n", err)
 	}
@@ -44,51 +29,51 @@ func applyCommand(option toCommander, client *Client) {
 
 func DefaultFormatConfig() FormatConfig {
 	return FormatConfig{
-		justify:   justify{"left"},
-		emphasize: emphasize{false},
-		font:      font{"A"},
+		justification: "left",
+		emphasis:      false,
+		font:          "A",
 	}
 }
 
 // Justification setters
 func (fmtCfg FormatConfig) JustifyLeft() FormatConfig {
-	fmtCfg.justify.justification = "left"
+	fmtCfg.justification = "left"
 	return fmtCfg
 }
 
 func (fmtCfg FormatConfig) JustifyRight() FormatConfig {
-	fmtCfg.justify.justification = "right"
+	fmtCfg.justification = "right"
 	return fmtCfg
 }
 
 func (fmtCfg FormatConfig) JustifyCenter() FormatConfig {
-	fmtCfg.justify.justification = "center"
+	fmtCfg.justification = "center"
 	return fmtCfg
 }
 
 // Emphasize setters
 func (fmtCfg FormatConfig) Emphasize(enabled bool) FormatConfig {
-	fmtCfg.emphasize.enabled = enabled
+	fmtCfg.emphasis = enabled
 	return fmtCfg
 }
 
 // Font setters
 func (fmtCfg FormatConfig) FontA() FormatConfig {
-	fmtCfg.font.selection = "A"
+	fmtCfg.font = "A"
 	return fmtCfg
 }
 
 func (fmtCfg FormatConfig) FontB() FormatConfig {
-	fmtCfg.font.selection = "B"
+	fmtCfg.font = "B"
 	return fmtCfg
 }
 
 func (fmtCfg FormatConfig) FontC() FormatConfig {
-	fmtCfg.font.selection = "C"
+	fmtCfg.font = "C"
 	return fmtCfg
 }
 
 func (fmtCfg FormatConfig) FontD() FormatConfig {
-	fmtCfg.font.selection = "D"
+	fmtCfg.font = "D"
 	return fmtCfg
 }
