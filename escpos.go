@@ -39,6 +39,14 @@ func (client *Client) WriteLine(line string) {
 	client.writeString("\n")
 }
 
+// Write configures the client using the given Configurer then writes
+// the given string to the ESC/POS target.
+func (client *Client) Write(s string, fmtCfg FormatConfig) {
+	fmtCfg.apply(client)
+	client.writeString(s)
+	DefaultFormatConfig().apply(client)
+}
+
 // Cut writes a command which selects the cut mode and cuts the paper.
 // \x1DV is GS V, the select mode and cut command. The A0 is used to
 // specify the mode.
