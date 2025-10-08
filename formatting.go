@@ -35,45 +35,22 @@ func DefaultFormatConfig() FormatConfig {
 	}
 }
 
-// Justification setters
-func (fmtCfg FormatConfig) JustifyLeft() FormatConfig {
-	fmtCfg.justification = "left"
+// Justify justifies the text based on the given value. Supported values
+// usually include 'left', 'center' and 'right'.
+func (fmtCfg FormatConfig) Justify(justification string) FormatConfig {
+	fmtCfg.justification = justification
 	return fmtCfg
 }
 
-func (fmtCfg FormatConfig) JustifyRight() FormatConfig {
-	fmtCfg.justification = "right"
-	return fmtCfg
-}
-
-func (fmtCfg FormatConfig) JustifyCenter() FormatConfig {
-	fmtCfg.justification = "center"
-	return fmtCfg
-}
-
-// Emphasize setters
+// Emphasize sets the text emphasis to the given bool value.
 func (fmtCfg FormatConfig) Emphasize(enabled bool) FormatConfig {
 	fmtCfg.emphasis = enabled
 	return fmtCfg
 }
 
-// Font setters
-func (fmtCfg FormatConfig) FontA() FormatConfig {
-	fmtCfg.font = "A"
-	return fmtCfg
-}
-
-func (fmtCfg FormatConfig) FontB() FormatConfig {
-	fmtCfg.font = "B"
-	return fmtCfg
-}
-
-func (fmtCfg FormatConfig) FontC() FormatConfig {
-	fmtCfg.font = "C"
-	return fmtCfg
-}
-
-func (fmtCfg FormatConfig) FontD() FormatConfig {
-	fmtCfg.font = "D"
+// Font sets the font to the specific value. Supported values usually
+// include A, B, C, D and E but this may differ per printer.
+func (fmtCfg FormatConfig) Font(font string) FormatConfig {
+	fmtCfg.font = font
 	return fmtCfg
 }
