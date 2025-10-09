@@ -53,6 +53,8 @@ type Profile interface {
 	Emphasis
 }
 
+// EpsonTMT20III implements the ESC/POS commands specific to the Epson
+// TM-T20III printer.
 type EpsonTMT20III struct {
 }
 
