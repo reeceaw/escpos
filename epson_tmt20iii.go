@@ -30,7 +30,7 @@ func (EpsonTMT20III) FontCommand(fmtCfg *FormatConfig) (string, error) {
 	case "D":
 		return "\x1BM3", nil
 	default:
-		return "", errors.New("invalid font selection")
+		return "", errors.New("invalid font option in FormatConfig")
 	}
 }
 
@@ -43,7 +43,7 @@ func (EpsonTMT20III) JustificationCommand(fmtCfg *FormatConfig) (string, error) 
 	case "right":
 		return "\x1Ba2", nil
 	default:
-		return "", errors.New("invalid justification")
+		return "", errors.New("invalid justification option in FormatConfig")
 	}
 }
 
@@ -52,5 +52,18 @@ func (EpsonTMT20III) EmphasisCommand(fmtCfg *FormatConfig) (string, error) {
 		return "\x1BE1", nil
 	} else {
 		return "\x1BE0", nil
+	}
+}
+
+func (EpsonTMT20III) UnderlineCommand(fmtCfg *FormatConfig) (string, error) {
+	switch fmtCfg.underline {
+	case "off":
+		return "\x1B-0", nil
+	case "1-dot":
+		return "\x1B-1", nil
+	case "2-dot":
+		return "\x1B-2", nil
+	default:
+		return "", errors.New("invalid underline option in FormatConfig")
 	}
 }

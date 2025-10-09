@@ -6,6 +6,7 @@ type FormatConfig struct {
 	justification string
 	emphasis      bool
 	font          string
+	underline     string
 }
 
 func (fmtCfg FormatConfig) apply(client *Client, profile Profile) {
@@ -17,6 +18,9 @@ func (fmtCfg FormatConfig) apply(client *Client, profile Profile) {
 
 	applyCommand(
 		func() (string, error) { return profile.EmphasisCommand(&fmtCfg) }, client)
+
+	applyCommand(
+		func() (string, error) { return profile.UnderlineCommand(&fmtCfg) }, client)
 }
 
 func applyCommand(getCommand func() (string, error), client *Client) {
@@ -32,6 +36,7 @@ func DefaultFormatConfig() FormatConfig {
 		justification: "left",
 		emphasis:      false,
 		font:          "A",
+		underline:     "off",
 	}
 }
 
@@ -52,5 +57,10 @@ func (fmtCfg FormatConfig) Emphasize(enabled bool) FormatConfig {
 // include A, B, C, D and E but this may differ per printer.
 func (fmtCfg FormatConfig) Font(font string) FormatConfig {
 	fmtCfg.font = font
+	return fmtCfg
+}
+
+func (fmtCfg FormatConfig) Underline(mode string) FormatConfig {
+	fmtCfg.underline = mode
 	return fmtCfg
 }

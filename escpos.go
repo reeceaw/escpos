@@ -58,8 +58,6 @@ func (client *Client) Write(s string, fmtCfg FormatConfig) {
 }
 
 // Cut writes a command which selects the cut mode and cuts the paper.
-// \x1DV is GS V, the select mode and cut command. The A0 is used to
-// specify the mode.
 func (client *Client) Cut() {
 	command, err := client.profile.CutCommand()
 	if err != nil {
@@ -69,6 +67,8 @@ func (client *Client) Cut() {
 	client.writeString(command)
 }
 
+// End signifies the printing has completed and subsequent data is
+// considered separate.
 func (client *Client) End() {
 	command, err := client.profile.EndCommand()
 	if err != nil {

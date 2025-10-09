@@ -64,6 +64,18 @@ func TestEpsonTMT20III_FontCommand(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("font with unknown value returns error", func(t *testing.T) {
+		got, err := profile.FontCommand(&FormatConfig{font: "blabla"})
+
+		if got != "" || err == nil {
+			t.Errorf("command was not nil, expected empty string and error")
+		}
+
+		if err.Error() != "invalid font option in FormatConfig" {
+			t.Errorf("FontCommand did not return expected error, got %s", err.Error())
+		}
+	})
 }
 
 func TestEpsonTMT20III_JustificationCommand(t *testing.T) {
@@ -94,6 +106,18 @@ func TestEpsonTMT20III_JustificationCommand(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("justification with unknown value returns error", func(t *testing.T) {
+		got, err := profile.JustificationCommand(&FormatConfig{justification: "blabla"})
+
+		if got != "" || err == nil {
+			t.Errorf("command was not nil, expected empty string and error")
+		}
+
+		if err.Error() != "invalid justification option in FormatConfig" {
+			t.Errorf("JustificationCommand did not return expected error, got %s", err.Error())
+		}
+	})
 }
 
 func TestEpsonTMT20III_EmphasisCommand(t *testing.T) {
@@ -123,4 +147,46 @@ func TestEpsonTMT20III_EmphasisCommand(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestEpsonTMT20III_UnderlineCommand(t *testing.T) {
+	profile := EpsonTMT20III{}
+
+	cases := []struct {
+		name      string
+		underline string
+		want      []byte
+	}{
+		{"underline off returns correct value", "off", []byte{'\x1B', '-', '0'}},
+		{"underline 1-dot returns correct value", "1-dot", []byte{'\x1B', '-', '1'}},
+		{"underline 2-dot returns correct value", "2-dot", []byte{'\x1B', '-', '2'}},
+	}
+
+	for _, testCase := range cases {
+		t.Run(testCase.name, func(t *testing.T) {
+			got, err := profile.UnderlineCommand(&FormatConfig{underline: testCase.underline})
+
+			if err != nil {
+				t.Errorf("err was not nil")
+			}
+
+			gotAsBytes := []byte(got)
+
+			if !bytes.Equal(gotAsBytes, testCase.want) {
+				t.Errorf("UnderlineCommand did not return expected bytes: wanted %v, got %v", testCase.want, gotAsBytes)
+			}
+		})
+	}
+
+	t.Run("underline with unknown value returns error", func(t *testing.T) {
+		got, err := profile.UnderlineCommand(&FormatConfig{underline: "blabla"})
+
+		if got != "" || err == nil {
+			t.Errorf("returned command was not nil, expected empty string and error")
+		}
+
+		if err.Error() != "invalid underline option in FormatConfig" {
+			t.Errorf("UnderlineCommand did not return expected error, got %s", err.Error())
+		}
+	})
 }

@@ -39,6 +39,14 @@ type Emphasis interface {
 	EmphasisCommand(*FormatConfig) (string, error)
 }
 
+// Underline allows for the underlining of text, usually with multiple
+// modes to set thickness.
+type Underline interface {
+	// UnderlineCommand should return the printer-specific command to set
+	// the underline mode based on the value found in the FormatConfig.
+	UnderlineCommand(*FormatConfig) (string, error)
+}
+
 // Profile represents a printer profile, surfacing commands for that specific
 // printer. A profile should map from the generic FormatConfig to the specific
 // commands for a particular printer.
@@ -49,4 +57,5 @@ type Profile interface {
 	Font
 	Justification
 	Emphasis
+	Underline
 }
