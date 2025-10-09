@@ -50,12 +50,14 @@ func (fmtCfg FormatConfig) Emphasize(enabled bool) FormatConfig {
 }
 
 // Font sets the font to the specific value. Supported values usually
-// include A, B, C, D and E but this may differ per printer.
+// include A, B, C, D and E but this may differ based on printer profile.
 func (fmtCfg FormatConfig) Font(font string) FormatConfig {
 	fmtCfg.font = font
 	return fmtCfg
 }
 
+// Underline sets the style of underline. This varies based on printer
+// but usually supports off, 1-dot and 2-dots.
 func (fmtCfg FormatConfig) Underline(mode string) FormatConfig {
 	fmtCfg.underline = mode
 	return fmtCfg
