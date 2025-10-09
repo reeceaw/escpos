@@ -10,25 +10,21 @@ type FormatConfig struct {
 }
 
 func (fmtCfg FormatConfig) apply(client *Client, profile Profile) {
-	applyCommand(
-		func() (string, error) { return profile.FontCommand(&fmtCfg) }, client)
-
-	applyCommand(
-		func() (string, error) { return profile.JustificationCommand(&fmtCfg) }, client)
-
-	applyCommand(
-		func() (string, error) { return profile.EmphasisCommand(&fmtCfg) }, client)
-
-	applyCommand(
-		func() (string, error) { return profile.UnderlineCommand(&fmtCfg) }, client)
-}
-
-func applyCommand(getCommand func() (string, error), client *Client) {
-	command, err := getCommand()
-	if err != nil {
-		fmt.Printf("invalid command: %v\n", err)
+	commands := []func(*FormatConfig) (string, error){
+		profile.FontCommand,
+		profile.JustificationCommand,
+		profile.EmphasisCommand,
+		profile.UnderlineCommand,
 	}
-	client.writeString(command)
+
+	for _, command := range commands {
+		value, err := command(&fmtCfg)
+		if err != nil {
+			fmt.Printf("failed building command: %v\n", err)
+			return
+		}
+		client.writeString(value)
+	}
 }
 
 func DefaultFormatConfig() FormatConfig {
