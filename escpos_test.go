@@ -7,7 +7,7 @@ import (
 
 func TestNewClient(t *testing.T) {
 	var writer bytes.Buffer
-	NewClient(&writer)
+	NewClient(&writer, EpsonTMT20III{})
 
 	got := writer.Bytes()
 	want := []byte{'\x1B', '@'}
@@ -19,7 +19,7 @@ func TestNewClient(t *testing.T) {
 
 func TestClient_WriteLine(t *testing.T) {
 	var writer bytes.Buffer
-	client := NewClient(&writer)
+	client := NewClient(&writer, EpsonTMT20III{})
 	writer.Reset()
 
 	client.WriteLine("Hello!")
@@ -34,7 +34,7 @@ func TestClient_WriteLine(t *testing.T) {
 
 func TestClient_Cut(t *testing.T) {
 	var writer bytes.Buffer
-	client := NewClient(&writer)
+	client := NewClient(&writer, EpsonTMT20III{})
 	writer.Reset()
 
 	client.Cut()
@@ -49,7 +49,7 @@ func TestClient_Cut(t *testing.T) {
 
 func TestClient_End(t *testing.T) {
 	var writer bytes.Buffer
-	client := NewClient(&writer)
+	client := NewClient(&writer, EpsonTMT20III{})
 	writer.Reset()
 
 	client.End()
