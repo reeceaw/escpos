@@ -2,11 +2,12 @@ package escpos
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 )
 
 func TestEpsonTMT20III_SimpleCommands(t *testing.T) {
-	profile := EpsonTMT20III{}
+	var profile Profile = EpsonTMT20III{}
 
 	cases := []struct {
 		name        string
@@ -36,7 +37,7 @@ func TestEpsonTMT20III_SimpleCommands(t *testing.T) {
 }
 
 func TestEpsonTMT20III_FontCommand(t *testing.T) {
-	profile := EpsonTMT20III{}
+	var profile Profile = EpsonTMT20III{}
 
 	cases := []struct {
 		name string
@@ -79,7 +80,7 @@ func TestEpsonTMT20III_FontCommand(t *testing.T) {
 }
 
 func TestEpsonTMT20III_JustificationCommand(t *testing.T) {
-	profile := EpsonTMT20III{}
+	var profile Profile = EpsonTMT20III{}
 
 	cases := []struct {
 		name          string
@@ -121,7 +122,7 @@ func TestEpsonTMT20III_JustificationCommand(t *testing.T) {
 }
 
 func TestEpsonTMT20III_EmphasisCommand(t *testing.T) {
-	profile := EpsonTMT20III{}
+	var profile Profile = EpsonTMT20III{}
 
 	cases := []struct {
 		name     string
@@ -150,7 +151,7 @@ func TestEpsonTMT20III_EmphasisCommand(t *testing.T) {
 }
 
 func TestEpsonTMT20III_UnderlineCommand(t *testing.T) {
-	profile := EpsonTMT20III{}
+	var profile Profile = EpsonTMT20III{}
 
 	cases := []struct {
 		name      string
@@ -189,4 +190,66 @@ func TestEpsonTMT20III_UnderlineCommand(t *testing.T) {
 			t.Errorf("UnderlineCommand did not return expected error, got %s", err.Error())
 		}
 	})
+}
+
+func TestEpsonTMT20III_CharSizeCommand(t *testing.T) {
+	var profile Profile = EpsonTMT20III{}
+
+	cases := []struct {
+		name   string
+		width  uint8
+		height uint8
+		want   []byte
+	}{
+		{"charsize with width 1, height 1 returns correct value", 1, 1, []byte{'\x1D', '!', '\x00'}},
+		{"charsize with width 1, height 2 returns correct value", 1, 2, []byte{'\x1D', '!', '\x01'}},
+		{"charsize with width 2, height 1 returns correct value", 2, 1, []byte{'\x1D', '!', '\x10'}},
+		{"charsize with width 8, height 8 returns correct value", 8, 8, []byte{'\x1D', '!', '\x77'}},
+	}
+
+	for _, testCase := range cases {
+		t.Run(testCase.name, func(t *testing.T) {
+			got, err := profile.CharSizeCommand(&FormatConfig{charWidth: testCase.width, charHeight: testCase.height})
+
+			if err != nil {
+				t.Errorf("err was not nil")
+			}
+
+			gotAsBytes := []byte(got)
+
+			if !bytes.Equal(gotAsBytes, testCase.want) {
+				t.Errorf("CharSizeCommand did not return expected bytes: wanted %v, got %v", testCase.want, gotAsBytes)
+			}
+		})
+	}
+
+	negativeCases := []struct {
+		name   string
+		width  uint8
+		height uint8
+		want   []byte
+	}{
+		{"charsize with width 0, height 0 returns error", 0, 0, []byte{'\x1D', '!', '0'}},
+		{"charsize with width 0, height 1 returns error", 0, 1, []byte{'\x1D', '!', '0'}},
+		{"charsize with width 1, height 0 returns error", 1, 0, []byte{'\x1D', '!', '0'}},
+		{"charsize with width 9, height 8 returns error", 9, 8, []byte{'\x1D', '!', '0'}},
+		{"charsize with width 8, height 9 returns error", 8, 9, []byte{'\x1D', '!', '0'}},
+		{"charsize with width 9, height 9 returns error", 9, 9, []byte{'\x1D', '!', '0'}},
+	}
+
+	for _, testCase := range negativeCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			got, err := profile.CharSizeCommand(&FormatConfig{charWidth: testCase.width, charHeight: testCase.height})
+
+			if got != "" || err == nil {
+				t.Errorf("returned command was not nil, expected empty string and error")
+			}
+
+			expectedError := fmt.Sprintf("invalid charsize options in FormatConfig: width %v, height %v\n", testCase.width, testCase.height)
+
+			if err.Error() != expectedError {
+				t.Errorf("CharSizeCommand did not return expected error, got %s, wanted %s", err.Error(), expectedError)
+			}
+		})
+	}
 }

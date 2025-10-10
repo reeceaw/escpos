@@ -7,6 +7,8 @@ type FormatConfig struct {
 	emphasis      bool
 	font          string
 	underline     string
+	charWidth     uint8
+	charHeight    uint8
 }
 
 func (fmtCfg FormatConfig) apply(client *Client, profile Profile) {
@@ -15,6 +17,7 @@ func (fmtCfg FormatConfig) apply(client *Client, profile Profile) {
 		profile.JustificationCommand,
 		profile.EmphasisCommand,
 		profile.UnderlineCommand,
+		profile.CharSizeCommand,
 	}
 
 	for _, command := range commands {
@@ -33,6 +36,8 @@ func DefaultFormatConfig() FormatConfig {
 		emphasis:      false,
 		font:          "A",
 		underline:     "off",
+		charWidth:     1,
+		charHeight:    1,
 	}
 }
 
@@ -60,5 +65,14 @@ func (fmtCfg FormatConfig) Font(font string) FormatConfig {
 // but usually supports off, 1-dot and 2-dots.
 func (fmtCfg FormatConfig) Underline(mode string) FormatConfig {
 	fmtCfg.underline = mode
+	return fmtCfg
+}
+
+// CharSize sets the character size using width and height multipliers.
+// 1 is the default, 2 is double-width and so on up to 8x multiplication
+// for most printers.
+func (fmtCfg FormatConfig) CharSize(width uint8, height uint8) FormatConfig {
+	fmtCfg.charWidth = width
+	fmtCfg.charHeight = height
 	return fmtCfg
 }
