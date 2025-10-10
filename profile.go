@@ -47,6 +47,13 @@ type Underline interface {
 	UnderlineCommand(*FormatConfig) (string, error)
 }
 
+// CharSize allows for the scaling of character size.
+type CharSize interface {
+	// CharSizeCommand should return the printer-specific command to set
+	// the character size scaling based on the values in the FormatConfig.
+	CharSizeCommand(*FormatConfig) (string, error)
+}
+
 // Profile represents a printer profile, surfacing commands for that specific
 // printer. A profile should map from the generic FormatConfig to the specific
 // commands for a particular printer.
@@ -58,4 +65,5 @@ type Profile interface {
 	Justification
 	Emphasis
 	Underline
+	CharSize
 }

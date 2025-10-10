@@ -1,6 +1,9 @@
 package escpos
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // EpsonTMT20III implements the ESC/POS commands specific to the Epson
 // TM-T20III printer.
@@ -66,4 +69,15 @@ func (EpsonTMT20III) UnderlineCommand(fmtCfg *FormatConfig) (string, error) {
 	default:
 		return "", errors.New("invalid underline option in FormatConfig")
 	}
+}
+
+func (EpsonTMT20III) CharSizeCommand(fmtCfg *FormatConfig) (string, error) {
+	if fmtCfg.charWidth < 1 || fmtCfg.charHeight < 1 || fmtCfg.charWidth > 8 || fmtCfg.charHeight > 8 {
+		message := fmt.Sprintf("invalid charsize options in FormatConfig: width %v, height %v\n", fmtCfg.charWidth, fmtCfg.charHeight)
+		return "", errors.New(message)
+	}
+
+	sizeByte := ((fmtCfg.charWidth - 1) << 4) | (fmtCfg.charHeight - 1)
+
+	return fmt.Sprintf("\x1D!%c", sizeByte), nil
 }

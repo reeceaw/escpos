@@ -7,7 +7,7 @@ Add `escpos` to your module:
 ```shell
 go get github.com/reeceaw/escpos
 ```
-Import `escpos` and use `NewClient(io.Writer)` to create a client. 
+Import `escpos` and use `NewClient(io.Writer, Profile)` to create a client. 
 ```go
 package main
 
@@ -58,7 +58,8 @@ func writeWithFormatting(client escpos.Client) {
 		Emphasize(true).
 		Font("B").
 		Justify("center").
-		Underline("1-dot")
+		Underline("1-dot").
+		CharSize(2, 2)
 	
 	client.Write("My formatted message!\n", customFormat)
 }
