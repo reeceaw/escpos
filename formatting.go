@@ -69,8 +69,8 @@ func (fmtCfg FormatConfig) Underline(mode string) FormatConfig {
 }
 
 // CharSize sets the character size using width and height multipliers.
-// 1 is the default, 2 is double-width and so on up to 8x multiplication
-// for most printers.
+// 1 is the default, 2 is double-width/height and so on up to 8x
+// multiplication for most printers.
 func (fmtCfg FormatConfig) CharSize(width uint8, height uint8) FormatConfig {
 	fmtCfg.charWidth = width
 	fmtCfg.charHeight = height
