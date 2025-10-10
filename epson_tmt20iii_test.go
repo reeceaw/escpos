@@ -160,7 +160,7 @@ func TestEpsonTMT20III_UnderlineCommand(t *testing.T) {
 	}{
 		{"underline off returns correct value", "off", []byte{'\x1B', '-', '0'}},
 		{"underline 1-dot returns correct value", "1-dot", []byte{'\x1B', '-', '1'}},
-		{"underline 2-dot returns correct value", "2-dot", []byte{'\x1B', '-', '2'}},
+		{"underline 2-dots returns correct value", "2-dots", []byte{'\x1B', '-', '2'}},
 	}
 
 	for _, testCase := range cases {
