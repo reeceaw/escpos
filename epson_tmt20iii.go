@@ -64,7 +64,7 @@ func (EpsonTMT20III) UnderlineCommand(fmtCfg *FormatConfig) (string, error) {
 		return "\x1B-0", nil
 	case "1-dot":
 		return "\x1B-1", nil
-	case "2-dot":
+	case "2-dots":
 		return "\x1B-2", nil
 	default:
 		return "", errors.New("invalid underline option in FormatConfig")
