@@ -64,3 +64,17 @@ func writeWithFormatting(client escpos.Client) {
 	client.Write("My formatted message!\n", customFormat)
 }
 ```
+
+### QR codes
+A QR code can be printed using the `WriteQrCode(string, QrCodeConfig)` function:
+```go
+func myQrCode(client escpos.Client) {
+	qrCodeCfg := escpos.DefaultQrCodeConfig().
+		Model("2").
+		Size(6).
+		Justify("right").
+		ErrorCorrection("Q")
+	
+	client.WriteQrCode("https://github.com/reeceaw/escpos", qrCodeCfg)
+}
+```

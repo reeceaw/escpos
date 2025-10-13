@@ -16,7 +16,7 @@ func DefaultQrCodeConfig() QrCodeConfig {
 	}
 }
 
-// Model sets the QR code model. The default is model 1.
+// Model sets the QR code model. The default is model 2.
 func (cfg QrCodeConfig) Model(model string) QrCodeConfig {
 	cfg.model = model
 	return cfg
