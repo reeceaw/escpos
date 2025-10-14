@@ -7,6 +7,8 @@ type QrCodeConfig struct {
 	justification   string
 }
 
+// DefaultQrCodeConfig creates a QrCodeConfig containing sensible
+// default values for QR code printing.
 func DefaultQrCodeConfig() QrCodeConfig {
 	return QrCodeConfig{
 		model:           "2",
