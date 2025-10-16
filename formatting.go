@@ -30,6 +30,8 @@ func (fmtCfg FormatConfig) apply(client *Client, profile Profile) {
 	}
 }
 
+// DefaultFormatConfig creates a FormatConfig containing sensible
+// default values for text formatting.
 func DefaultFormatConfig() FormatConfig {
 	return FormatConfig{
 		justification: "left",

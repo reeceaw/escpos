@@ -54,6 +54,43 @@ type CharSize interface {
 	CharSizeCommand(*FormatConfig) (string, error)
 }
 
+// SelectQrCodeModel selects the QR code model.
+type SelectQrCodeModel interface {
+	// SelectQrCodeModelCommand should return the printer-specific command
+	// to set the QR code model based on the given QrCodeConfig.
+	SelectQrCodeModelCommand(*QrCodeConfig) (string, error)
+}
+
+// SetQrCodeSize sets the QR code size.
+type SetQrCodeSize interface {
+	// SetQrCodeSizeCommand should return the printer-specific command
+	// to set the QR code size based on the given QrCodeConfig.
+	SetQrCodeSizeCommand(*QrCodeConfig) (string, error)
+}
+
+// SelectQrCodeErrorCorrectionLevel selects the QR code error
+// correction level.
+type SelectQrCodeErrorCorrectionLevel interface {
+	// SelectQrCodeErrorCorrectionLevelCommand should return the
+	// printer-specific command to set the QR error correction
+	// level based on the given QrCodeConfig.
+	SelectQrCodeErrorCorrectionLevelCommand(*QrCodeConfig) (string, error)
+}
+
+// StoreQrCodeData stores the QR code data in the symbol storage area.
+type StoreQrCodeData interface {
+	// StoreQrCodeDataCommand should return the printer-specific command
+	// to store the QR code data in the symbol storage area.
+	StoreQrCodeDataCommand(string) (string, error)
+}
+
+// PrintQrCodeData prints the QR code.
+type PrintQrCodeData interface {
+	// PrintQrCodeDataCommand should return the printer-specific command
+	// to print the QR code.
+	PrintQrCodeDataCommand() (string, error)
+}
+
 // Profile represents a printer profile, surfacing commands for that specific
 // printer. A profile should map from the generic FormatConfig to the specific
 // commands for a particular printer.
@@ -66,4 +103,9 @@ type Profile interface {
 	Emphasis
 	Underline
 	CharSize
+	SelectQrCodeModel
+	SetQrCodeSize
+	SelectQrCodeErrorCorrectionLevel
+	StoreQrCodeData
+	PrintQrCodeData
 }
