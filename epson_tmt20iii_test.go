@@ -451,3 +451,47 @@ func TestEpsonTMT20III_StoreQrCodeDataCommand(t *testing.T) {
 		}
 	})
 }
+
+func TestEpsonTMT20III_Beep(t *testing.T) {
+	var profile Profile = EpsonTMT20III{}
+
+	t.Run("beep command should return correct command", func(t *testing.T) {
+		params := map[string]uint8{"n": 1, "c": 2}
+		got, err := profile.BeepCommand(params)
+
+		want := string([]byte{'\x1B', '(', 'A', '\x03', '\x00', '\x3D', '\x01', '\x02'})
+
+		if got == "" || err != nil {
+			t.Errorf("returned command was empty or err was not nil")
+		}
+
+		if got != want {
+			t.Errorf("BeepCommand did not return expected command, got: %v, wanted %v", got, want)
+		}
+	})
+
+	negativeCases := []struct {
+		name   string
+		params map[string]uint8
+		want   string
+	}{
+		{"beep command should return error for invalid sound pattern", map[string]uint8{"n": 0}, "invalid sound pattern, supported patterns: 1-7"},
+		{"beep command should return error for invalid sound pattern", map[string]uint8{"n": 8}, "invalid sound pattern, supported patterns: 1-7"},
+		{"beep command should return error for no sound pattern passed", map[string]uint8{"c": 10}, "no sound pattern provided, supported patterns: 1-7"},
+		{"beep command should return error for no repeat number passed", map[string]uint8{"n": 5}, "number of repeats not provided, supported values: 0-255"},
+	}
+
+	for _, testCase := range negativeCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			got, err := profile.BeepCommand(testCase.params)
+
+			if got != "" || err == nil {
+				t.Errorf("returned command was not nil, expected empty string and error")
+			}
+
+			if err.Error() != testCase.want {
+				t.Errorf("BeepCommand did not return expected error, got %s, wanted %s", err, testCase.want)
+			}
+		})
+	}
+}

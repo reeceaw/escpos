@@ -78,3 +78,16 @@ func myQrCode(client escpos.Client) {
 	client.WriteQrCode("https://github.com/reeceaw/escpos", qrCodeCfg)
 }
 ```
+
+### Beeper
+Some printers can beep a buzzer using the `Beep(params map[string]uint8)` function:
+```go
+func soundTheAlarm(client escpos.Client) {
+	params := map[string]uint8 {
+	    "n": 1, // sound pattern
+		"c": 5, // number of repeats
+    }
+	
+	client.Beep(params)
+}
+```

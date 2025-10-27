@@ -91,6 +91,15 @@ type PrintQrCodeData interface {
 	PrintQrCodeDataCommand() (string, error)
 }
 
+// Beep allows for the sounding of the buzzer.
+type Beep interface {
+	// BeepCommand should return the printer-specific command for sounding
+	// the buzzer based on the given map of parameters. This command does
+	// vary for printer models hence the usage of a parameter map to take
+	// in values which control sound pattern, repetitions and more.
+	BeepCommand(map[string]uint8) (string, error)
+}
+
 // Profile represents a printer profile, surfacing commands for that specific
 // printer. A profile should map from the generic FormatConfig to the specific
 // commands for a particular printer.
@@ -108,4 +117,5 @@ type Profile interface {
 	SelectQrCodeErrorCorrectionLevel
 	StoreQrCodeData
 	PrintQrCodeData
+	Beep
 }

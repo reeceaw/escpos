@@ -136,3 +136,21 @@ func (EpsonTMT20III) StoreQrCodeDataCommand(data string) (string, error) {
 func (EpsonTMT20III) PrintQrCodeDataCommand() (string, error) {
 	return string([]byte{'\x1D', '(', 'k', 3, 0, qrCodeSymbol, 81, 48}), nil
 }
+
+func (EpsonTMT20III) BeepCommand(params map[string]uint8) (string, error) {
+	soundPattern, found := params["n"]
+	if !found {
+		return "", errors.New("no sound pattern provided, supported patterns: 1-7")
+	}
+
+	if soundPattern < 1 || soundPattern > 7 {
+		return "", errors.New("invalid sound pattern, supported patterns: 1-7")
+	}
+
+	numberOfRepeats, found := params["c"]
+	if !found {
+		return "", errors.New("number of repeats not provided, supported values: 0-255")
+	}
+
+	return string([]byte{'\x1B', '(', 'A', '\x03', '\x00', '\x3D', soundPattern, numberOfRepeats}), nil
+}

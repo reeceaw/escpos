@@ -118,3 +118,17 @@ func (client *Client) WriteQrCode(data string, cfg QrCodeConfig) {
 
 	DefaultFormatConfig().apply(client, client.profile)
 }
+
+// Beep writes a command which makes the printers buzzer sound based on
+// the given parameters. Required parameters vary by model and are
+// dictated by the printer profile in use.
+func (client *Client) Beep(params map[string]uint8) {
+	command, err := client.profile.BeepCommand(params)
+
+	if err != nil {
+		fmt.Printf("error getting beep command: %v", err)
+		return
+	}
+
+	client.writeString(command)
+}
